@@ -4,6 +4,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello():
+    print('✅ Cloud Run にアクセスがありました')
     return 'Hello from Cloud Run!', 200
 
 if __name__ == '__main__':
