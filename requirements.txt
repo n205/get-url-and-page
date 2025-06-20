@@ -1,0 +1,10 @@
+Flask==2.2.5
+requests
+pypdf
+pandas
+gspread
+gspread_dataframe
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
