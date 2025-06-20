@@ -12,7 +12,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET'])
 def process_pdf_links():
     # Google Sheets 設定
-    SPREADSHEET_ID = 'あなたのスプレッドシートID'
+    SPREADSHEET_ID = '18Sb4CcAE5JPFeufHG97tLZz9Uj_TvSGklVQQhoFF28w'
     WORKSHEET_NAME = 'バリュー抽出'
 
     # 認証（サービスアカウント json を使う）
