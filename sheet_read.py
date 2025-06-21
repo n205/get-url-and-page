@@ -20,6 +20,7 @@ def sheet_read():
         logging.info(1)
         gc = gspread.authorize(creds)
         logging.info(2)
+        logging.info(f'credentials: {creds.service_account_email}')
         sh = gc.open_by_key(SPREADSHEET_ID)
         logging.info(3)
         worksheet = sh.worksheet(WORKSHEET_NAME)
@@ -31,5 +32,6 @@ def sheet_read():
         return f'取得済URL数: {len(processed_urls)}', 200
 
     except Exception as e:
-        logging.error(f'❌ エラー: {e}')
+        import traceback
+        logging.error('❌ エラー発生:\n' + traceback.format_exc())
         return f'エラー: {e}', 500
