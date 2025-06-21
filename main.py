@@ -16,8 +16,9 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def main():
     logging.info('📥 リクエスト受信')
+    sheet_read()
     return 'Cloud Run Function executed.', 200
-    #return sheet_read()
+
 
 if __name__ == '__main__':
     logging.info('🚀 アプリ起動')
