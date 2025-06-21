@@ -1,6 +1,8 @@
 FROM python:3.11-slim
 
-# Install dependencies
+WORKDIR /app
+
+# 必要な apt パッケージとフォントなど
 RUN apt-get update && apt-get install -y \
     wget \
     unzip \
@@ -25,27 +27,23 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
-# Install a fixed version of Chrome
-RUN wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_137.0.7151.119_amd64.deb && \
-    apt-get update && \
-    apt-get install -y ./google-chrome-stable_137.0.7151.119_amd64.deb && \
-    rm google-chrome-stable_137.0.7151.119_amd64.deb
+# Chrome 137.0.7151.119 を直接インストール
+RUN wget -q https://dl.google.com/linux/deb/pool/main/g/google-chrome-stable/google-chrome-stable_137.0.7151.119-1_amd64.deb \
+ && apt-get update \
+ && apt-get install -y ./google-chrome-stable_137.0.7151.119-1_amd64.deb \
+ && rm google-chrome-stable_137.0.7151.119-1_amd64.deb
 
-# Install specific ChromeDriver (e.g. 137.0.7151.119)
-RUN wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/137.0.7151.119/chromedriver_linux64.zip && \
-    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
-    chmod +x /usr/local/bin/chromedriver && \
-    rm /tmp/chromedriver.zip
+# 対応 ChromeDriver のインストール
+RUN wget -q -O /tmp/chromedriver.zip \
+    https://storage.googleapis.com/chrome-for-testing-public/137.0.7151.119/linux64/chromedriver-linux64.zip \
+ && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
+ && chmod +x /usr/local/bin/chromedriver \
+ && rm /tmp/chromedriver.zip
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1
-ENV PATH="/usr/local/bin:$PATH"
-
-# Set workdir
-WORKDIR /app
-COPY . /app
-
-# Install Python dependencies
+# Python ライブラリ関連
+COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip && pip install -r requirements.txt
+
+COPY . /app
 
 CMD ["python", "main.py"]
