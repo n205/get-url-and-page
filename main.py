@@ -1,11 +1,10 @@
-from flask import Flask, request
+from flask import Flask
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def hello():
     print('📥 リクエストを受け取りました')
-    print(f'🔧 メソッド: {request.method}')
     return 'Cloud Run Function executed.', 2000
 
 if __name__ == '__main__':
