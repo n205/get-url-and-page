@@ -36,9 +36,10 @@ RUN wget -q https://dl.google.com/linux/deb/pool/main/g/google-chrome-stable/goo
 # 対応 ChromeDriver のインストール
 RUN wget -q -O /tmp/chromedriver.zip \
     https://storage.googleapis.com/chrome-for-testing-public/137.0.7151.119/linux64/chromedriver-linux64.zip \
- && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
+ && unzip /tmp/chromedriver.zip -d /tmp/ \
+ && mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver \
  && chmod +x /usr/local/bin/chromedriver \
- && rm /tmp/chromedriver.zip
+ && rm -rf /tmp/chromedriver.zip /tmp/chromedriver-linux64
 
 # Python ライブラリ関連
 COPY requirements.txt requirements.txt
