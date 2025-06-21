@@ -17,12 +17,8 @@ def sheet_read():
                 'https://www.googleapis.com/auth/drive'
             ]
         )
-        logging.info(1)
         gc = gspread.authorize(creds)
-        logging.info(2)
-        logging.info(f'credentials: {creds.service_account_email}')
         sh = gc.open_by_key(SPREADSHEET_ID)
-        logging.info(3)
         worksheet = sh.worksheet(WORKSHEET_NAME)
 
         existing_df = get_as_dataframe(worksheet).dropna(subset=['URL'])
