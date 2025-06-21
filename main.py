@@ -5,6 +5,9 @@ from gspread_dataframe import get_as_dataframe
 from google.oauth2 import service_account
 import logging
 
+from sheet_read import sheet_read
+
+
 # Cloud Logging に出力するよう設定
 logging.basicConfig(level=logging.INFO)
 
@@ -14,6 +17,7 @@ app = Flask(__name__)
 def main():
     logging.info('📥 リクエスト受信')
     return 'Cloud Run Function executed.', 200
+    #return sheet_read()
 
 if __name__ == '__main__':
     logging.info('🚀 アプリ起動')
