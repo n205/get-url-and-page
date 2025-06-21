@@ -19,7 +19,7 @@ def main():
     logging.info('📥 リクエスト受信')
     worksheet, existing_df, processed_urls = sheet_read()
 
-    #append_new_pdf_links(worksheet, existing_df, processed_urls)
+    append_new_pdf_links(worksheet, existing_df, processed_urls)
     
     return 'Cloud Run Function executed.', 200
 
