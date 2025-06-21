@@ -4,6 +4,11 @@ import gspread
 from gspread_dataframe import get_as_dataframe
 from google.oauth2 import service_account
 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+import time
+
 
 def sheet_read():
     SPREADSHEET_ID = '18Sb4CcAE5JPFeufHG97tLZz9Uj_TvSGklVQQhoFF28w'
@@ -32,13 +37,6 @@ def sheet_read():
         logging.error('❌ エラー発生:\n' + traceback.format_exc())
         return f'エラー: {e}', 500
 
-
-
-
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-import time
 
 
 def append_new_pdf_links(worksheet, existing_df, processed_urls):
