@@ -25,7 +25,7 @@ def sheet_read():
         processed_urls = set(existing_df['URL'].tolist())
 
         logging.info(f'✅ 取得済URL数: {len(processed_urls)}')
-        return f'取得済URL数: {len(processed_urls)}', 200
+        return worksheet, existing_df, processed_urls
 
     except Exception as e:
         import traceback
