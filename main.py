@@ -3,7 +3,7 @@ from flask import Flask
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
-def hello():
+def main():
     print('📥 リクエストを受け取りました')
     return 'Cloud Run Function executed.', 2000
 
