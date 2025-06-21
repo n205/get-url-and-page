@@ -71,9 +71,8 @@ def append_new_pdf_links(worksheet, existing_df, processed_urls):
 
         if new_rows:
             new_df = pd.DataFrame(new_rows)
-            final_df = pd.concat([existing_df, new_df], ignore_index=True)
-            worksheet.clear()
-            worksheet.update([final_df.columns.values.tolist()] + final_df.values.tolist())
+            new_df.replace([np.nan, np.inf, -np.inf], '', inplace=True)
+            worksheet.append_rows(new_df.values.tolist())
             logging.info(f'🆕 新規URL {len(new_rows)} 件を追加しました')
             return f'{len(new_rows)} 件のURLを追加', 200
         else:
