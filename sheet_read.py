@@ -4,6 +4,7 @@ import gspread
 from gspread_dataframe import get_as_dataframe
 from google.oauth2 import service_account
 
+
 def sheet_read():
     SPREADSHEET_ID = '18Sb4CcAE5JPFeufHG97tLZz9Uj_TvSGklVQQhoFF28w'
     WORKSHEET_NAME = 'バリュー抽出'
