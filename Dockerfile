@@ -26,13 +26,13 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 # Install a fixed version of Chrome
-RUN wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_137.0.7151.104-1_amd64.deb && \
+RUN wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_137.0.7151.119-1_amd64.deb && \
     apt-get update && \
-    apt-get install -y ./google-chrome-stable_137.0.7151.104-1_amd64.deb && \
-    rm google-chrome-stable_137.0.7151.104-1_amd64.deb
+    apt-get install -y ./google-chrome-stable_137.0.7151.119-1_amd64.deb && \
+    rm google-chrome-stable_137.0.7151.119-1_amd64.deb
 
-# Install specific ChromeDriver (e.g. 137.0.7151.104)
-RUN wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/137.0.7151.104/chromedriver_linux64.zip && \
+# Install specific ChromeDriver (e.g. 137.0.7151.119)
+RUN wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/137.0.7151.119/chromedriver_linux64.zip && \
     unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
     chmod +x /usr/local/bin/chromedriver && \
     rm /tmp/chromedriver.zip
