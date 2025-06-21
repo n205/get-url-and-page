@@ -16,7 +16,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def main():
     logging.info('📥 リクエスト受信')
-    sheet_read()
+    worksheet, existing_df, processed_urls = sheet_read()
     return 'Cloud Run Function executed.', 200
 
 
