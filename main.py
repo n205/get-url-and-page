@@ -2,10 +2,12 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def hello():
-    print('✅ Cloud Run にアクセスがありました')
-    return 'Hello from Cloud Run!', 200
+    print('📥 リクエストを受け取りました')
+    print(f'🔧 メソッド: {request.method}')
+    return 'Cloud Run Function executed.', 2000
 
 if __name__ == '__main__':
+    print('🚀 アプリを起動します')
     app.run(host='0.0.0.0', port=8080)
