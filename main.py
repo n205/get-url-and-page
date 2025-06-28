@@ -21,6 +21,8 @@ def main():
 
     append_new_pdf_links(worksheet, existing_df, processed_urls)
     
+    update_page_counts(worksheet)
+    
     return 'Cloud Run Function executed.', 200
 
 
