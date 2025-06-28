@@ -2,6 +2,7 @@ import logging
 import numpy as np
 import requests
 from pypdf import PdfReader
+from io import BytesIO
 from gspread_dataframe import get_as_dataframe, set_with_dataframe
 
 
@@ -10,7 +11,7 @@ def get_pdf_page_count(url):
         headers = {'User-Agent': 'Mozilla/5.0'}
         response = requests.get(url, headers=headers, timeout=20)
         response.raise_for_status()
-        reader = PdfReader(response.content)
+        reader = PdfReader(BytesIO(response.content))
         if reader.is_encrypted:
             reader.decrypt('')
         return len(reader.pages)
