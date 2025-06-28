@@ -10,6 +10,7 @@ from sheet_read import append_new_pdf_links
 from page_count_updater import update_page_counts
 
 
+
 # Cloud Logging に出力するよう設定
 logging.basicConfig(level=logging.INFO)
 
