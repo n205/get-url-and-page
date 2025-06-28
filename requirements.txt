@@ -1,6 +1,8 @@
 Flask==2.2.5
 requests
 pypdf
+cryptography>=42.0.0
+
 pandas
 gspread
 gspread_dataframe
@@ -10,3 +12,4 @@ google-auth-httplib2
 google-api-python-client
 
 selenium
+
