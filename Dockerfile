@@ -4,6 +4,10 @@ WORKDIR /app
 
 # 必要な apt パッケージとフォントなど
 RUN apt-get update && apt-get install -y \
+    libssl-dev \
+    libffi-dev \
+    python3-dev \
+    cargo \
     wget \
     unzip \
     curl \
