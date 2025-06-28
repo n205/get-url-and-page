@@ -1,8 +1,11 @@
 import logging
 import pandas as pd
 import gspread
-from gspread_dataframe import get_as_dataframe
+from gspread_dataframe import get_as_dataframe, set_with_dataframe
 from google.oauth2 import service_account
+
+import requests
+from pypdf import PdfReader
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
