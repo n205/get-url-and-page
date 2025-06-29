@@ -3,7 +3,7 @@ import numpy as np
 import requests
 from pypdf import PdfReader
 from io import BytesIO
-from gspread_dataframe import get_as_dataframe, set_with_dataframe
+from gspread_dataframe import get_as_dataframe
 
 
 def get_pdf_page_count(url):
@@ -22,22 +22,27 @@ def get_pdf_page_count(url):
 
 def update_page_counts(worksheet):
     df = get_as_dataframe(worksheet)
-    df.fillna('', inplace=True)
 
     updated = 0
     for idx, row in df.iterrows():
         url = row['URL']
         page = row['ページ数']
-        if url and (page == '' or str(page).strip() == 'nan'):
+
+        # 未入力判定（NaNまたはNone）
+        if url and (pd.isna(page) or str(page).strip() == ''):
             count = get_pdf_page_count(url)
             df.at[idx, 'ページ数'] = count
             logging.info(f'📄 ページ数取得: {url} → {count}')
             updated += 1
 
     if updated > 0:
-        df.replace([np.nan, np.inf, -np.inf], '', inplace=True)
-        df.infer_objects(copy=False)
-        worksheet.update(f'C2:C{len(df)+1}', [[v] for v in df['ページ数'].tolist()])
+        # 書き込み用にNaN→Noneへ変換
+        df['ページ数'] = df['ページ数'].apply(lambda x: None if pd.isna(x) else int(x))
+
+        worksheet.update(
+            f'C2:C{len(df)+1}',
+            [[v] for v in df['ページ数'].tolist()]
+        )
         logging.info(f'✅ {updated} 件のページ数を更新しました')
         return f'{updated} 件更新', 200
     else:
