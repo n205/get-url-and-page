@@ -36,6 +36,7 @@ def update_page_counts(worksheet):
 
     if updated > 0:
         df.replace([np.nan, np.inf, -np.inf], '', inplace=True)
+        df.infer_objects(copy=False)
         worksheet.update(f'C2:C{len(df)+1}', [[v] for v in df['ページ数'].tolist()])
         logging.info(f'✅ {updated} 件のページ数を更新しました')
         return f'{updated} 件更新', 200
