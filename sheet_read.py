@@ -62,10 +62,11 @@ def append_new_pdf_links(worksheet, existing_df, processed_urls):
             if href and href.endswith('.pdf') and href not in processed_urls and href not in seen_urls:
                 seen_urls.add(href)
                 new_rows.append({
-                    '会社名': '',
-                    'バリュー': '',
+                    'URL': href,
                     'ページ数': '',
-                    'URL': href
+                    '会社名': '',
+                    'バリューT': '',
+                    'バリューG': ''
                 })
 
         driver.quit()
