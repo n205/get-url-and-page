@@ -37,11 +37,15 @@ def update_page_counts(worksheet):
             updated += 1
 
     if updated > 0:
-        # 書き込み用にNaN→Noneへ変換
+        # NaN→Noneに変換し、intへキャスト
         df['ページ数'] = df['ページ数'].apply(lambda x: None if pd.isna(x) else int(x))
 
+        # ページ数列が何列目にあるかを特定（例：B列ならindex=1 → Excel列名は 'B'）
+        col_index = df.columns.get_loc('ページ数')  # 0-based index
+        col_letter = chr(ord('A') + col_index)     # A, B, C, ...
+
         worksheet.update(
-            f'C2:C{len(df)+1}',
+            f'{col_letter}2:{col_letter}{len(df)+1}',
             [[v] for v in df['ページ数'].tolist()]
         )
         logging.info(f'✅ {updated} 件のページ数を更新しました')
