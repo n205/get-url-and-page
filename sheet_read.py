@@ -64,7 +64,8 @@ def append_new_pdf_links(worksheet, existing_df, processed_urls):
                 new_rows.append({
                     'URL': href,
                     'ページ数': '',
-                    '会社名': '',
+                    '会社名T': '',
+                    '会社名G': '',
                     'バリューT': '',
                     'バリューG': ''
                 })
