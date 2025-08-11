@@ -54,13 +54,13 @@ def update_page_counts(worksheet):
         # ページ数更新
         worksheet.update(
             f'{col_letter_page}2:{col_letter_page}{len(df)+1}',
-            [[v] for v in df['ページ数'].tolist()]
+            [[None if pd.isna(v) else int(v)] for v in df['ページ数']]
         )
-
+        
         # 取得日更新
         worksheet.update(
             f'{col_letter_date}2:{col_letter_date}{len(df)+1}',
-            [[v] for v in df['取得日'].tolist()]
+            [[None if pd.isna(v) else str(v)] for v in df['取得日']]
         )
 
         logging.info(f'✅ {updated} 件のページ数と取得日を更新しました')
