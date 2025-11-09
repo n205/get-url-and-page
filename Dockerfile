@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11-slim-bookworm
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
     libatk1.0-0 \
     libcups2 \
     libdbus-1-3 \
-    libgdk-pixbuf-2.0-0 \    # ← 修正！
+    libgdk-pixbuf2.0-0 \    # ← 修正！
     libnspr4 \
     libnss3 \
     libx11-xcb1 \
