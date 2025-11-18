@@ -5,8 +5,8 @@ from gspread_dataframe import get_as_dataframe
 from google.oauth2 import service_account
 import logging
 
-from sheet_read import sheet_read
-from sheet_read import append_new_pdf_links
+from read_sheet import read_sheet
+from read_sheet import append_new_pdf_links
 from update_page_count import update_page_counts
 
 
