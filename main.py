@@ -24,7 +24,8 @@ def main():
 
     # pdfリンク追加
     update_pdf_links(worksheet, existing_df, processed_urls)
-    
+
+    # ページ数追加
     update_page_counts(worksheet)
     
     return 'Cloud Run Function executed.', 200
