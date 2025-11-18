@@ -11,7 +11,7 @@ import time
 import numpy as np
 
 
-def sheet_read():
+def read_sheet():
     SPREADSHEET_ID = '18Sb4CcAE5JPFeufHG97tLZz9Uj_TvSGklVQQhoFF28w'
     WORKSHEET_NAME = 'バリュー抽出'
 
