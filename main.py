@@ -20,7 +20,7 @@ def main():
     logging.info('📥 リクエスト受信')
 
     # スプレッドシート読込
-    worksheet, existing_df, processed_urls = sheet_read()
+    worksheet, existing_df, processed_urls = read_sheet()
 
     # pdfリンク追加
     append_new_pdf_links(worksheet, existing_df, processed_urls)
