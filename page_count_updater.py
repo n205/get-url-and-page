@@ -22,10 +22,6 @@ def get_pdf_page_count(url):
 def update_page_counts(worksheet):
     df = get_as_dataframe(worksheet)
 
-    # 「取得日」列がなければ追加
-    if '取得日' not in df.columns:
-        df['取得日'] = None
-
     updated = 0
     for idx, row in df.iterrows():
         url = row['URL']
