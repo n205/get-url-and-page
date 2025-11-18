@@ -7,8 +7,7 @@ import logging
 
 from sheet_read import sheet_read
 from sheet_read import append_new_pdf_links
-from page_count_update import update_page_counts
-
+from update_page_count import update_page_counts
 
 
 # Cloud Logging に出力するよう設定
