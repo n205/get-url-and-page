@@ -6,7 +6,7 @@ from google.oauth2 import service_account
 import logging
 
 from read_sheet import read_sheet
-from read_sheet import append_new_pdf_links
+from update_pdf_link import update_pdf_links
 from update_page_count import update_page_counts
 
 
@@ -23,7 +23,7 @@ def main():
     worksheet, existing_df, processed_urls = read_sheet()
 
     # pdfリンク追加
-    append_new_pdf_links(worksheet, existing_df, processed_urls)
+    update_pdf_links(worksheet, existing_df, processed_urls)
     
     update_page_counts(worksheet)
     
