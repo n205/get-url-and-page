@@ -19,8 +19,11 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def main():
     logging.info('📥 リクエスト受信')
+
+    # スプレッドシート読込
     worksheet, existing_df, processed_urls = sheet_read()
 
+    # pdfリンク追加
     append_new_pdf_links(worksheet, existing_df, processed_urls)
     
     update_page_counts(worksheet)
