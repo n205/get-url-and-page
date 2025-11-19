@@ -1,3 +1,4 @@
+import os
 import logging
 from pypdf import PdfReader
 from io import BytesIO
