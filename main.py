@@ -8,6 +8,7 @@ import logging
 from read_sheet import read_sheet
 from update_pdf_link import update_pdf_links
 from update_page_count import update_page_counts
+from update_言語 from update_言語T
 
 
 # Cloud Logging に出力するよう設定
@@ -27,6 +28,8 @@ def main():
 
     # ページ数追加
     update_page_counts(worksheet)
+
+    update_言語T(worksheet)
     
     return 'Cloud Run Function executed.', 200
 
