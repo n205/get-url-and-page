@@ -66,7 +66,7 @@ def update_言語T(worksheet):
 
         # PDFダウンロードして言語判定
         try:
-            r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
+            r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
 
             if r.status_code != 200:
                 df.at[idx, "言語T"] = "対象外"
