@@ -8,7 +8,8 @@ import logging
 from read_sheet import read_sheet
 from update_pdf_link import update_pdf_links
 from update_page_count import update_page_counts
-from update_言語
+from update_言語 import update_言語T
+from update_言語 import update_言語G
 
 
 # Cloud Logging に出力するよう設定
