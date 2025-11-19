@@ -4,8 +4,6 @@ WORKDIR /app
 
 # 必要な apt パッケージとフォントなど
 RUN apt-get update && apt-get install -y \
-    poppler-utils \
-    && rm -rf /var/lib/apt/lists/*
     libssl-dev \
     libffi-dev \
     python3-dev \
@@ -30,6 +28,7 @@ RUN apt-get update && apt-get install -y \
     libxdamage1 \
     libxrandr2 \
     xdg-utils \
+    poppler-utils \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
