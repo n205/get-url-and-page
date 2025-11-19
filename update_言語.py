@@ -38,7 +38,7 @@ def detect_language_from_text(pdf_bytes):
         return "対象外"
 
 
-def update_language_T(worksheet):
+def update_言語T(worksheet):
     df = get_as_dataframe(worksheet)
     df.fillna("", inplace=True)
 
