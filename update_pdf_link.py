@@ -4,6 +4,8 @@ import gspread
 from gspread_dataframe import get_as_dataframe
 from google.oauth2 import service_account
 
+import os
+import shutil
 import uuid
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -15,20 +17,32 @@ import numpy as np
 
 def update_pdf_links(worksheet, existing_df, processed_urls):
     driver = None
+    # 完全にユニークな作業ディレクトリを作成
+    session_id = str(uuid.uuid4())
+    unique_user_data_dir = f"/tmp/chrome_user_data_{session_id}"
+    unique_cache_dir = f"/tmp/chrome_cache_{session_id}"
+    
     try:
-        # --- Selenium起動オプションの設定 ---
+        os.makedirs(unique_user_data_dir, exist_ok=True)
+        os.makedirs(unique_cache_dir, exist_ok=True)
+
+        # --- Cloud Run 専用の超安定・クラッシュ防止 Selenium オプション ---
         options = Options()
-        options.add_argument('--headless=new')  # 最新のヘッドレスモード
+        options.add_argument('--headless=new')
         options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--disable-dev-shm-usage') # /dev/shmの代わりに/tmpを使う
         options.add_argument('--disable-gpu')
-
-        # 【重要】Cloud Run上でのプロファイル競合と読み取り専用エラーを回避
-        unique_user_data_dir = f"/tmp/chrome_user_data_{uuid.uuid4()}"
+        options.add_argument('--no-first-run')
+        options.add_argument('--no-default-browser-check')
+        
+        # メモリ不足・ポート競合クラッシュを徹底的に防ぐ
+        options.add_argument('--remote-debugging-pipe') # 9222ポート競合を避けるパイプ通信
+        options.add_argument(f'--crash-dumps-dir={unique_cache_dir}')
+        
+        # プロファイルとキャッシュを指定
         options.add_argument(f"--user-data-dir={unique_user_data_dir}")
-        options.add_argument("--disk-cache-dir=/tmp/chrome_cache")
+        options.add_argument(f"--disk-cache-dir={unique_cache_dir}")
 
-        # 【重要】Dockerfileで配置したChrome本体とDriverを明示的に指定
         options.binary_location = "/usr/local/bin/google-chrome"
         service = Service(executable_path="/usr/local/bin/chromedriver")
 
@@ -67,9 +81,17 @@ def update_pdf_links(worksheet, existing_df, processed_urls):
         return f'エラー: {e}', 500
 
     finally:
-        # エラー発生時でも確実にブラウザプロセスを終了させる
+        # 1. ブラウザを安全に閉じる
         if driver is not None:
             try:
                 driver.quit()
             except Exception:
                 pass
+        
+        # 2. 【重要】Cloud Runのディスク枯渇を防ぐため、使った一時フォルダを完全削除する
+        for d in [unique_user_data_dir, unique_cache_dir]:
+            if os.path.exists(d):
+                try:
+                    shutil.rmtree(d, ignore_errors=True)
+                except Exception:
+                    pass
