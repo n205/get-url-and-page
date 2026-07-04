@@ -11,8 +11,8 @@ import numpy as np
 import pandas as pd
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-text_model = genai.GenerativeModel('gemini-2.0-flash')
-image_model = genai.GenerativeModel('gemini-2.0-flash')
+text_model = genai.GenerativeModel('gemini-2.5-flash')
+image_model = genai.GenerativeModel('gemini-2.5-flash')
 
 def detect_language_from_text(pdf_bytes):
     try:
