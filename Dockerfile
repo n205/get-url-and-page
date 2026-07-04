@@ -32,19 +32,21 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
-# Chrome 137.0.7151.119 を直接インストール
-RUN wget -q https://dl.google.com/linux/deb/pool/main/g/google-chrome-stable/google-chrome-stable_137.0.7151.119-1_amd64.deb \
- && apt-get update \
- && apt-get install -y ./google-chrome-stable_137.0.7151.119-1_amd64.deb \
- && rm google-chrome-stable_137.0.7151.119-1_amd64.deb
+# --- 【変更箇所】 Chrome for Testing (137.0.7151.119) 本体のインストール ---
+RUN wget -q -O /tmp/chrome.zip \
+    https://storage.googleapis.com/chrome-for-testing-public/137.0.7151.119/linux64/chrome-linux64.zip \
+ && unzip /tmp/chrome.zip -d /opt/ \
+ && ln -s /opt/chrome-linux64/chrome /usr/local/bin/google-chrome \
+ && chmod +x /opt/chrome-linux64/chrome \
+ && rm /tmp/chrome.zip
 
-# 対応 ChromeDriver のインストール
+# --- 【変更箇所】 対応 ChromeDriver のインストール ---
 RUN wget -q -O /tmp/chromedriver.zip \
     https://storage.googleapis.com/chrome-for-testing-public/137.0.7151.119/linux64/chromedriver-linux64.zip \
- && unzip /tmp/chromedriver.zip -d /tmp/ \
- && mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver \
- && chmod +x /usr/local/bin/chromedriver \
- && rm -rf /tmp/chromedriver.zip /tmp/chromedriver-linux64
+ && unzip /tmp/chromedriver.zip -d /opt/ \
+ && ln -s /opt/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver \
+ && chmod +x /opt/chromedriver-linux64/chromedriver \
+ && rm /tmp/chromedriver.zip
 
 # Python ライブラリ関連
 COPY requirements.txt requirements.txt
