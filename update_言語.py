@@ -46,7 +46,8 @@ def detect_language_from_text(pdf_bytes):
 
 def update_言語T(worksheet):
     df = get_as_dataframe(worksheet)
-    df.fillna("", inplace=True)
+    #df.fillna("", inplace=True)
+    df = df.astype(object).fillna("")
 
     updated = 0
 
@@ -140,7 +141,8 @@ def detect_language_from_pdf_image(pdf_bytes):
 # ============================
 def update_言語G(worksheet):
     df = get_as_dataframe(worksheet)
-    df.fillna('', inplace=True)
+    #df.fillna('', inplace=True)
+    df = df.astype(object).fillna("")
 
     update_count = 0
 
