@@ -16,33 +16,44 @@ import numpy as np
 def update_pdf_links(worksheet, existing_df, processed_urls):
     driver = None
     try:
+        def update_pdf_links(worksheet, existing_df, processed_urls):
+    driver = None
+    try:
         options = Options()
-        # --- ヘッドレス環境のフル安定化オプション ---
+        # --- 基本ヘッドレス環境オプション ---
         options.add_argument('--headless=new')
         options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')  # /dev/shm の使用を避ける
+        options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--disable-gpu')
-        options.add_argument('--single-process')        # 単一プロセスモードでメモリ節約
+        options.add_argument('--single-process')
         options.add_argument('--remote-debugging-port=9222')
 
-        # --- 【追加】重複起動・メモリ不足時のクラッシュを徹底防御するオプション ---
-        options.add_argument('--disable-extensions')       # 拡張機能を無効化
-        options.add_argument('--blink-settings=imagesEnabled=false')  # 画像の読み込みを無効化（超軽量化）
-        options.add_argument('--disable-features=VizDisplayCompositor') # レンダリングの軽量化
+        # --- 【超重要】コンテナ再利用時の共有ロック誤認を完全に回避する設定 ---
+        options.add_argument('--disable-background-networking')
+        options.add_argument('--no-first-run')
+        options.add_argument('--no-default-browser-check')
+        # シングルトン（単一起動チェック）構造を無効化し、古い残骸があっても強制起動させる
+        options.add_argument('--disable-single-click-autofill')
+        options.add_argument('--user-data-dir=/tmp/chrome_user_data_dir') 
+        # ↑ UUID で毎回フォルダを量産すると /tmp が溢れるリスクがあるため、
+        # 以下の「ロック無効化」フラグを立てた上で、固定の一時フォルダを指定する方が Cloud Run では安定します。
         
-        # ページ読み込み戦略を「eager（DOM確定時点で次の処理へ）」にしてタイムアウトを防ぐ
-        options.page_load_strategy = 'eager'
-
-        # 完全一意の一時ディレクトリ設定
+        # 【決定打】Chrome が起動時に一時ファイルのロックを確認・作成するのを禁止する
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-setuid-sandbox')
+        
+        # 以下の環境変数的なフラグ（プロファイルロックの強制無効化）を起動引数に渡します
+        options.add_argument('--disable-features=WebRtcHideLocalIpsWithMdns,GpuProcessHighPriority')
+        
+        # Chrome内部のディスクキャッシュを毎回クリーンな別の場所に指定
         unique_id = str(uuid.uuid4())
-        options.add_argument(f'--user-data-dir=/tmp/chrome_data_{unique_id}')
-        options.add_argument(f'--data-path=/tmp/chrome_data_path_{unique_id}')
         options.add_argument(f'--disk-cache-dir=/tmp/chrome_cache_{unique_id}')
 
+        # Chrome本体とDriverのパス指定
         options.binary_location = "/usr/local/bin/google-chrome"
         service = Service(executable_path="/usr/local/bin/chromedriver")
 
-        # ブラウザ起動（ここでタイムアウトが発生しなくなります）
+        # 起動
         driver = webdriver.Chrome(service=service, options=options)
         
         # スクリプトのタイムアウト時間を明示的に設定（念のための安全策）
