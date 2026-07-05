@@ -16,9 +16,6 @@ import numpy as np
 def update_pdf_links(worksheet, existing_df, processed_urls):
     driver = None
     try:
-        def update_pdf_links(worksheet, existing_df, processed_urls):
-    driver = None
-    try:
         options = Options()
         # --- 基本ヘッドレス環境オプション ---
         options.add_argument('--headless=new')
