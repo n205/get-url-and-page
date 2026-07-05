@@ -1,38 +1,30 @@
 FROM python:3.11-slim-bookworm
 
+ENV PYTHONUNBUFFERED=1
+
 WORKDIR /app
 
-# 必要な apt パッケージとフォントなど
+# Chrome および Selenium が確実に動作するための依存ライブラリを完全網羅
 RUN apt-get update && apt-get install -y \
-    libssl-dev \
-    libffi-dev \
-    python3-dev \
-    cargo \
     wget \
-    unzip \
     curl \
+    unzip \
     gnupg \
     ca-certificates \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libxtst6 \
+    libgtk-3-0 \
+    libgbm1 \
     fonts-liberation \
     libappindicator3-1 \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libcups2 \
-    libdbus-1-3 \
-    libgdk-pixbuf2.0-0 \
-    libnspr4 \
-    libnss3 \
-    libx11-xcb1 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
     xdg-utils \
     poppler-utils \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
-# --- 【変更箇所】 Chrome for Testing (137.0.7151.119) 本体のインストール ---
+# Chrome for Testing (137.0.7151.119) 本体のインストール
 RUN wget -q -O /tmp/chrome.zip \
     https://storage.googleapis.com/chrome-for-testing-public/137.0.7151.119/linux64/chrome-linux64.zip \
  && unzip /tmp/chrome.zip -d /opt/ \
@@ -40,7 +32,7 @@ RUN wget -q -O /tmp/chrome.zip \
  && chmod +x /opt/chrome-linux64/chrome \
  && rm /tmp/chrome.zip
 
-# --- 【変更箇所】 対応 ChromeDriver のインストール ---
+# 対応 ChromeDriver のインストール
 RUN wget -q -O /tmp/chromedriver.zip \
     https://storage.googleapis.com/chrome-for-testing-public/137.0.7151.119/linux64/chromedriver-linux64.zip \
  && unzip /tmp/chromedriver.zip -d /opt/ \
