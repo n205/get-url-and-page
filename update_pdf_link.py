@@ -4,7 +4,9 @@ import gspread
 from gspread_dataframe import get_as_dataframe
 from google.oauth2 import service_account
 
-import uuid
+import os
+import shutil
+import tempfile
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -15,9 +17,13 @@ import numpy as np
 
 def update_pdf_links(worksheet, existing_df, processed_urls):
     driver = None
+    # 1. 完全に重ならない専用の一時ディレクトリをシステムに作成させる
+    user_data_dir = tempfile.mkdtemp(prefix="chrome_user_data_")
+    disk_cache_dir = tempfile.mkdtemp(prefix="chrome_cache_")
+
     try:
         options = Options()
-        # --- 基本ヘッドレス環境オプション ---
+        # --- ヘッドレス環境の安定化オプション ---
         options.add_argument('--headless=new')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
@@ -25,41 +31,25 @@ def update_pdf_links(worksheet, existing_df, processed_urls):
         options.add_argument('--single-process')
         options.add_argument('--remote-debugging-port=9222')
 
-        # --- 【超重要】コンテナ再利用時の共有ロック誤認を完全に回避する設定 ---
+        # --- コンテナ環境のロック・ポップアップ回避フラグ ---
         options.add_argument('--disable-background-networking')
         options.add_argument('--no-first-run')
         options.add_argument('--no-default-browser-check')
-        # シングルトン（単一起動チェック）構造を無効化し、古い残骸があっても強制起動させる
-        options.add_argument('--disable-single-click-autofill')
-        options.add_argument('--user-data-dir=/tmp/chrome_user_data_dir') 
-        # ↑ UUID で毎回フォルダを量産すると /tmp が溢れるリスクがあるため、
-        # 以下の「ロック無効化」フラグを立てた上で、固定の一時フォルダを指定する方が Cloud Run では安定します。
-        
-        # 【決定打】Chrome が起動時に一時ファイルのロックを確認・作成するのを禁止する
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-setuid-sandbox')
-        
-        # 以下の環境変数的なフラグ（プロファイルロックの強制無効化）を起動引数に渡します
-        options.add_argument('--disable-features=WebRtcHideLocalIpsWithMdns,GpuProcessHighPriority')
-        
-        # Chrome内部のディスクキャッシュを毎回クリーンな別の場所に指定
-        unique_id = str(uuid.uuid4())
-        options.add_argument(f'--disk-cache-dir=/tmp/chrome_cache_{unique_id}')
+        options.add_argument('--disable-extensions')
 
-        # Chrome本体とDriverのパス指定
+        # 2. 上記で作成した完全にフレッシュなパスを割り当てる
+        options.add_argument(f'--user-data-dir={user_data_dir}')
+        options.add_argument(f'--disk-cache-dir={disk_cache_dir}')
+
         options.binary_location = "/usr/local/bin/google-chrome"
         service = Service(executable_path="/usr/local/bin/chromedriver")
 
-        # 起動
+        # ブラウザ起動
         driver = webdriver.Chrome(service=service, options=options)
-        
-        # スクリプトのタイムアウト時間を明示的に設定（念のための安全策）
         driver.set_page_load_timeout(30)
 
         url = 'https://jpx.esgdata.jp/app?分類=統合報告書'
         driver.get(url)
-        
-        # DOMの読み込みを少し待つ
         time.sleep(5)
 
         anchors = driver.find_elements(By.CSS_SELECTOR, 'a[target="_blank"]')
@@ -90,8 +80,17 @@ def update_pdf_links(worksheet, existing_df, processed_urls):
         return f'エラー: {e}', 500
 
     finally:
+        # 3. ブラウザプロセスを確実に終了
         if driver is not None:
             try:
                 driver.quit()
             except Exception:
                 pass
+        
+        # 4. 【重要】使用した一時ディレクトリをロックファイルごと完全に物理削除（メモリ解放＆次回起動時の衝突防止）
+        for folder in [user_data_dir, disk_cache_dir]:
+            if os.path.exists(folder):
+                try:
+                    shutil.rmtree(folder, ignore_errors=True)
+                except Exception as e:
+                    logging.warning(f"一時フォルダの削除に失敗しました: {e}")
